@@ -1,5 +1,7 @@
 package com.nnl.russiablock.board
 
+import com.nnl.russiablock.debug.RbLog
+
 class BrickFactory {
     companion object {
         var LINE_BRICK = 0
@@ -12,6 +14,7 @@ class BrickFactory {
     }
 
     fun createBrick(type: Int, x: Int, y: Int) : BaseBrick?{
+        RbLog.d("BrickFactory", "createBrick type: " + type)
         when(type){
             LINE_BRICK -> return LineBrick(x, y)
             T_BRICK -> return TBrick(x, y)

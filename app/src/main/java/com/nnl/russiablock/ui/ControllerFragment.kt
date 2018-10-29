@@ -36,6 +36,7 @@ class ControllerFragment : Fragment(), View.OnClickListener{
             R.id.controller_btn_left -> mainActivity.gameManager?.moveLeft()
             R.id.controller_btn_right -> mainActivity.gameManager?.moveRight()
             R.id.controller_btn_rotate -> mainActivity.gameManager?.rotate()
+            R.id.controller_btn_down -> mainActivity.gameManager?.fallDown()
         }
     }
 }

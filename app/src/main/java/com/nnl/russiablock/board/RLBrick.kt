@@ -1,5 +1,7 @@
 package com.nnl.russiablock.board
 
+import com.nnl.russiablock.debug.RbLog
+
 class RLBrick(x: Int, y: Int) : BaseBrick(4) {
     init {
         shape[0].x = x
@@ -10,5 +12,6 @@ class RLBrick(x: Int, y: Int) : BaseBrick(4) {
         shape[2].y = y + 1
         shape[3].x = x - 2
         shape[3].y = y + 1
+        RbLog.d("RLBrick", "RLBrick init")
     }
 }

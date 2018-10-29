@@ -1,13 +1,12 @@
 package com.nnl.russiablock.game
 
-import android.app.Activity
-import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
 import android.view.SurfaceView
 import com.nnl.russiablock.board.BaseBrick
 import com.nnl.russiablock.board.Board
 import com.nnl.russiablock.board.BrickFactory
+import com.nnl.russiablock.debug.RbLog
 import java.util.*
 import kotlin.concurrent.timerTask
 
@@ -23,12 +22,17 @@ class GameManager {
     private var brickInitX = 10
     private var brickInitY = 0
     private var downTime: Long = 500
+    private var isPause = false
+
+    enum class ProcessResult{
+        Normal, Bottom, Wipe, GameOver
+    }
 
     fun init(width: Int, height:  Int, view: SurfaceView) {
         board = Board(width, height)
         this.view = view
         autoUpdate()
-        board?.brick = createRandomBrick()
+        board?.setBrick(createRandomBrick())
         startDownTimer()
     }
 
@@ -38,7 +42,7 @@ class GameManager {
     }
 
     fun createRandomBrick() : BaseBrick?{
-        var type = Random(Calendar.getInstance().timeInMillis).nextInt()%BrickFactory.MAX_BRICK
+        var type = Math.abs(Random(Calendar.getInstance().timeInMillis).nextInt())%BrickFactory.MAX_BRICK
         return brickFactory.createBrick(type, brickInitX, brickInitY)
     }
 
@@ -66,17 +70,36 @@ class GameManager {
         updateTimer = null
     }
 
+    /**
+     */
+    fun gameProcess() : ProcessResult {
+        var result = ProcessResult.Normal
+        RbLog.d("GameManager", "game process thread id: " + Thread.currentThread().id)
+            if (board!!.getBrick() != null && !board!!.isBrickValid()) {
+                gameOver()
+                result = ProcessResult.GameOver
+            } else if (board!!.isShapeHitBottom()) {
+                board!!.merge()
+                board!!.setBrick(createRandomBrick())
+                result = ProcessResult.Bottom
+            } else {
+                board?.getBrick()?.moveDown()
+                if (board?.wipe() == true) {
+                    score++
+                    result = ProcessResult.Wipe
+                }
+            }
+        return result
+    }
+
     fun startDownTimer() {
+        RbLog.d("GameManager", "start down timer thread id: " + Thread.currentThread().id)
         if (downTimer == null) {
             downTimer = Timer()
             downTimer!!.schedule(timerTask {
-                if (board?.brick != null) {
-                    if (board!!.isShapeHitBottom()) {
-                        board!!.merge()
-                        board!!.brick = createRandomBrick()
-                    } else {
-                        board?.brick?.moveDown()
-                        board?.wipe()
+                if (board?.getBrick() != null) {
+                    if (!isPause) {
+                        gameProcess()
                     }
                 }
             }, 0, downTime)
@@ -90,7 +113,7 @@ class GameManager {
 
     fun moveLeft() : Boolean{
         if (board!!.canMoveLeft()) {
-            board!!.brick?.moveLeft()
+            board!!.getBrick()?.moveLeft()
             return true
         }
 
@@ -99,17 +122,35 @@ class GameManager {
 
     fun moveRight() : Boolean{
         if (board!!.canMoveRight()) {
-            board!!.brick?.moveRight()
+            board!!.getBrick()?.moveRight()
             return true
         }
         return false
     }
 
     fun rotate() : Boolean{
-        board?.brick?.rotate()
+        board?.getBrick()?.rotate()
         if (!board!!.isBrickValid()) {
-            board!!.brick!!.recover()
+            board!!.getBrick()!!.recover()
         }
         return true
+    }
+
+    fun fallDown() {
+        do {
+            var result = gameProcess()
+        } while (result == ProcessResult.Normal)
+    }
+
+    fun pause(pause: Boolean) {
+        isPause = pause
+    }
+
+    fun gameOver() {
+        stopDownTimer()
+    }
+
+    fun reset() {
+        board!!.reset()
     }
 }
