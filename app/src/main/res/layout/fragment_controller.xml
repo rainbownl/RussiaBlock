@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+             xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".ui.ControllerFragment">
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/controller_tv_score"
+            android:text="score:"/>
+    <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="P"
+            android:id="@+id/controller_btn_pause"
+            app:layout_constraintTop_toBottomOf="@id/controller_tv_score"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"/>
+    <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="R"
+            android:id="@+id/controller_btn_rotate"
+            app:layout_constraintTop_toBottomOf="@id/controller_btn_pause"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="@+id/controller_btn_pause"
+            app:layout_constraintEnd_toEndOf="@+id/controller_btn_pause"/>
+    <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/controller_btn_left"
+            app:layout_constraintTop_toBottomOf="@id/controller_btn_rotate"
+            app:layout_constraintDimensionRatio="1:1" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"/>
+    <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/controller_btn_right"
+            app:layout_constraintTop_toTopOf="@id/controller_btn_left"
+            app:layout_constraintDimensionRatio="1:1" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp"/>
+    <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/controller_btn_down"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toBottomOf="@id/controller_btn_left"
+            app:layout_constraintStart_toStartOf="@+id/controller_btn_rotate"
+            app:layout_constraintEnd_toEndOf="@+id/controller_btn_rotate"/>
+
+</android.support.constraint.ConstraintLayout>
