@@ -2,15 +2,15 @@ package com.nnl.russiablock.board
 
 import android.graphics.*
 
-class Board(var width: Int, var height: Int) {
+class Board(private var width: Int, private var height: Int) {
     private var blocks: Array<Array<Boolean>>? = null
     private var border = 4
     private var innerWidth = 2
     private var brick: BaseBrick? = null
 
     init {
-        blocks = Array(height){
-            Array(width){
+        blocks = Array(height){_ ->
+            Array(width){_ ->
                 false
             }
         }
@@ -75,7 +75,7 @@ class Board(var width: Int, var height: Int) {
         return true
     }
 
-    fun isLineFull(line : Array<Boolean>) : Boolean{
+    private fun isLineFull(line : Array<Boolean>) : Boolean{
         line.forEach {
             if (!it){
                 return false
@@ -84,7 +84,7 @@ class Board(var width: Int, var height: Int) {
         return true
     }
 
-    fun wipeLine(line: Int) {
+    private fun wipeLine(line: Int) {
         for (i in line downTo 1) {
             blocks!![i] = blocks!![i - 1].copyOf()
         }
@@ -107,21 +107,30 @@ class Board(var width: Int, var height: Int) {
         var left = 0
         var top = 0
         var w = canvas.width
-        var h = 0
+        var h = canvas.height
 
         synchronized(this) {
             if (margin != null) {
                 left = margin.left
                 top = margin.top
                 w -= (margin.left + margin.right)
+                h -= (margin.top + margin.bottom)
             }
 
             var blockWidth = w.toFloat() / width
-            var paint = Paint()
+            val th = blockWidth * height
+            if (th <= h) {
+                h = th.toInt()
+            } else {
+                blockWidth = h.toFloat() / height
+                w = (blockWidth * width).toInt()
+                left = (canvas.width - w)/2
+            }
+
+            val paint = Paint()
             paint.strokeWidth = innerWidth.toFloat()
             paint.color = Color.BLACK
 
-            h = (blockWidth * height).toInt()
             //draw vertical inner line
             for (i in IntRange(1, width - 1)) {
                 canvas.drawLine(left + i * blockWidth, top.toFloat(), left + i * blockWidth, top + h.toFloat(), paint)
@@ -157,8 +166,8 @@ class Board(var width: Int, var height: Int) {
             for (y in IntRange(0, height - 1)) {
                 for (x in IntRange(0, width - 1)) {
                     if (blocks!![y][x]) {
-                        var fx = x * blockWidth + left
-                        var fy = y * blockWidth + top
+                        val fx = x * blockWidth + left
+                        val fy = y * blockWidth + top
                         canvas.drawRect(fx, fy, fx + blockWidth, fy + blockWidth, paint)
                     }
                 }
@@ -167,8 +176,8 @@ class Board(var width: Int, var height: Int) {
             //draw brick
             if (brick != null) {
                 for (point in brick!!.shape) {
-                    var fx = point.x * blockWidth + left
-                    var fy = point.y * blockWidth + top
+                    val fx = point.x * blockWidth + left
+                    val fy = point.y * blockWidth + top
                     canvas.drawRect(fx, fy, fx + blockWidth, fy + blockWidth, paint)
                 }
             }
@@ -177,8 +186,8 @@ class Board(var width: Int, var height: Int) {
 
     fun reset() {
         synchronized(this) {
-            blocks = Array(height) {
-                Array(width) {
+            blocks = Array(height) {_ ->
+                Array(width) {_ ->
                     false
                 }
             }

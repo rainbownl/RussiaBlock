@@ -12,7 +12,7 @@ import kotlin.concurrent.timerTask
 
 //MVP的P
 class GameManager {
-    var score = 0
+    private var score = 0
     private var board: Board? = null
     private var view: SurfaceView? = null
     private var updatePeriod = 20
@@ -36,27 +36,27 @@ class GameManager {
         startDownTimer()
     }
 
-    fun uninit() {
+    fun unInit() {
         stopDownTimer()
         stopUpdateTimer()
     }
 
-    fun createRandomBrick() : BaseBrick?{
-        var type = Math.abs(Random(Calendar.getInstance().timeInMillis).nextInt())%BrickFactory.MAX_BRICK
+    private fun createRandomBrick() : BaseBrick?{
+        val type = Math.abs(Random(Calendar.getInstance().timeInMillis).nextInt())%BrickFactory.MAX_BRICK
         return brickFactory.createBrick(type, brickInitX, brickInitY)
     }
 
-    fun update() {
-        var canvas = view!!.holder.lockCanvas()
+    private fun update() {
+        val canvas = view!!.holder.lockCanvas()
         if (canvas != null) {
             canvas.drawColor(Color.LTGRAY)
-            var margin = Rect(50, 100, 50, 10)
+            val margin = Rect(50, 100, 50, 10)
             board?.draw(canvas, margin)
             view!!.holder.unlockCanvasAndPost(canvas)
         }
     }
 
-    fun autoUpdate() {
+    private fun autoUpdate() {
         if (updateTimer == null) {
             updateTimer = Timer()
             updateTimer!!.schedule(timerTask{
@@ -65,16 +65,15 @@ class GameManager {
         }
     }
 
-    fun stopUpdateTimer() {
+    private fun stopUpdateTimer() {
         updateTimer?.cancel()
         updateTimer = null
     }
 
     /**
      */
-    fun gameProcess() : ProcessResult {
+    private fun gameProcess() : ProcessResult {
         var result = ProcessResult.Normal
-        RbLog.d("GameManager", "game process thread id: " + Thread.currentThread().id)
             if (board!!.getBrick() != null && !board!!.isBrickValid()) {
                 gameOver()
                 result = ProcessResult.GameOver
@@ -92,8 +91,7 @@ class GameManager {
         return result
     }
 
-    fun startDownTimer() {
-        RbLog.d("GameManager", "start down timer thread id: " + Thread.currentThread().id)
+    private fun startDownTimer() {
         if (downTimer == null) {
             downTimer = Timer()
             downTimer!!.schedule(timerTask {
@@ -106,7 +104,7 @@ class GameManager {
         }
     }
 
-    fun stopDownTimer() {
+    private fun stopDownTimer() {
         downTimer?.cancel()
         downTimer = null
     }
@@ -137,16 +135,15 @@ class GameManager {
     }
 
     fun fallDown() {
-        do {
-            var result = gameProcess()
-        } while (result == ProcessResult.Normal)
+        while (gameProcess() == ProcessResult.Normal){}
     }
 
     fun pause(pause: Boolean) {
         isPause = pause
     }
 
-    fun gameOver() {
+    fun isPause() : Boolean { return isPause }
+    private fun gameOver() {
         stopDownTimer()
     }
 

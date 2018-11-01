@@ -4,12 +4,12 @@ import android.graphics.Point
 
 open class BaseBrick(var size: Int) {
     var shape: Array<Point> = Array(size){ Point() }
-    var rotate = 0
+    private var rotate = 0
 
-    var backupShape : Array<Point>? = null
-    var backupRotate = 0
+    private var backupShape : Array<Point>? = null
+    private var backupRotate = 0
 
-    fun backup() {
+    private fun backup() {
         backupShape = Array(size){ Point()}
         for (i in IntRange(0, size - 1)) {
             backupShape!![i].x = shape[i].x
@@ -52,9 +52,9 @@ open class BaseBrick(var size: Int) {
         }
     }
 
-    fun rotatePoint(point: Point, basePoint: Point) {
-        var offsetX = point.x - basePoint.x
-        var offsetY = point.y - basePoint.y
+    private fun rotatePoint(point: Point, basePoint: Point) {
+        val offsetX = point.x - basePoint.x
+        val offsetY = point.y - basePoint.y
         if (offsetX == 0 && offsetY != 0) {
             point.x -= offsetY
             point.y -= offsetY
