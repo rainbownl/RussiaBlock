@@ -33,6 +33,7 @@ class GameManager {
         this.view = view
         autoUpdate()
         board?.setBrick(createRandomBrick())
+        board?.setNextBrick(createRandomBrick()!!)
         startDownTimer()
     }
 
@@ -79,7 +80,8 @@ class GameManager {
                 result = ProcessResult.GameOver
             } else if (board!!.isShapeHitBottom()) {
                 board!!.merge()
-                board!!.setBrick(createRandomBrick())
+                board!!.setBrick(board!!.getNextBrick())
+                board!!.setNextBrick(createRandomBrick()!!)
                 result = ProcessResult.Bottom
             } else {
                 board?.getBrick()?.moveDown()

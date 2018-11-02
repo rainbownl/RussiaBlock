@@ -3,6 +3,7 @@ package com.nnl.russiablock.ui.custom_view
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -26,12 +27,47 @@ class ControlPanel(context : Context, attributeSet: AttributeSet) : View(context
 
     private var clickDownIndex = -1
     private var actionListener: OnActionListener? = null
+    private var upDrawable: Drawable? = null
+    private var upClickDrawable : Drawable? = null
+    private var leftDrawable : Drawable? = null
+    private var leftClickDrawable : Drawable? = null
+    private var centerDrawable : Drawable? = null
+    private var centerClickDrawable : Drawable? = null
+    private var rightDrawable : Drawable? = null
+    private var rightClickDrawable : Drawable? = null
+    private var downDrawable : Drawable? = null
+    private var downClickDrawable : Drawable? = null
 
     private class CRect{
         var x = 0f
         var y = 0f
         var width = 0
         var height = 0
+    }
+
+    fun setDrawables(index: Int, normal: Drawable, click: Drawable) {
+        when (index) {
+            upIndex -> {
+                upDrawable = normal
+                upClickDrawable = click
+            }
+            leftIndex -> {
+                leftDrawable = normal
+                leftClickDrawable = click
+            }
+            centerIndex -> {
+                centerDrawable = normal
+                centerClickDrawable = click
+            }
+            rightIndex -> {
+                rightDrawable = normal
+                rightClickDrawable = click
+            }
+            downIndex -> {
+                downDrawable = normal
+                downClickDrawable = click
+            }
+        }
     }
 
     fun setOnActionListener(in_listener: OnActionListener) {
@@ -62,12 +98,34 @@ class ControlPanel(context : Context, attributeSet: AttributeSet) : View(context
         calRects(canvas!!.width)
         var paint = Paint()
         for ((index , rect) in rects.withIndex()) {
+            var drawable: Drawable? = null
             if (index == clickDownIndex) {
                 paint.color = clickColor
+                drawable = when (index) {
+                    upIndex -> upClickDrawable
+                    leftIndex -> leftClickDrawable
+                    centerIndex -> centerClickDrawable
+                    rightIndex -> rightClickDrawable
+                    downIndex -> downClickDrawable
+                    else -> null
+                }
             } else {
                 paint.color = panColor
+                drawable = when(index) {
+                    upIndex -> upDrawable
+                    leftIndex -> leftDrawable
+                    centerIndex -> centerDrawable
+                    rightIndex -> rightDrawable
+                    downIndex -> downDrawable
+                    else -> null
+                }
             }
-            canvas?.drawRect(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height, paint)
+            if (drawable != null) {
+                drawable.setBounds(rect.x.toInt(), rect.y.toInt(), rect.x.toInt() + rect.width, rect.y.toInt() + rect.height)
+                drawable.draw(canvas)
+            } else {
+                canvas?.drawRect(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height, paint)
+            }
         }
     }
 

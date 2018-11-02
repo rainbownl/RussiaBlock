@@ -7,6 +7,7 @@ class Board(private var width: Int, private var height: Int) {
     private var border = 4
     private var innerWidth = 2
     private var brick: BaseBrick? = null
+    private var nextBrick: BaseBrick? = null
 
     init {
         blocks = Array(height){_ ->
@@ -26,6 +27,14 @@ class Board(private var width: Int, private var height: Int) {
         synchronized(this) {
             this.brick = brick
         }
+    }
+
+    fun getNextBrick() : BaseBrick? {
+        return nextBrick
+    }
+
+    fun setNextBrick(nextBrick: BaseBrick) {
+        this.nextBrick = nextBrick
     }
 
     fun merge() {
