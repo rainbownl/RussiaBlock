@@ -87,6 +87,7 @@ class GameManager {
                 board?.getBrick()?.moveDown()
                 if (board?.wipe() == true) {
                     score++
+                    board?.score = score
                     result = ProcessResult.Wipe
                 }
             }

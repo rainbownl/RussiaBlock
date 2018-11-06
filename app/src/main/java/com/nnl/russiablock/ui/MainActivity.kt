@@ -1,9 +1,11 @@
 package com.nnl.russiablock.ui
 
+import android.content.pm.ActivityInfo
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.view.SurfaceView
+import android.view.WindowManager
 import com.nnl.russiablock.R
 import com.nnl.russiablock.game.GameManager
 import com.nnl.russiablock.ui.custom_view.ControlPanel
@@ -32,6 +34,8 @@ class MainActivity : AppCompatActivity() , ControlPanel.OnActionListener{
             resources.getDrawable(R.drawable.right_1, null))
         controlPanel?.setDrawables(ControlPanel.downIndex, resources.getDrawable(R.drawable.down, null),
             resources.getDrawable(R.drawable.down_1, null))
+
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
     override fun onDestroy() {

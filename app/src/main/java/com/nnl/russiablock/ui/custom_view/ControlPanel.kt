@@ -98,7 +98,7 @@ class ControlPanel(context : Context, attributeSet: AttributeSet) : View(context
         calRects(canvas!!.width)
         var paint = Paint()
         for ((index , rect) in rects.withIndex()) {
-            var drawable: Drawable? = null
+            var drawable: Drawable?
             if (index == clickDownIndex) {
                 paint.color = clickColor
                 drawable = when (index) {

@@ -1,6 +1,7 @@
 package com.nnl.russiablock.board
 
 import android.graphics.*
+import kotlin.math.min
 
 class Board(private var width: Int, private var height: Int) {
     private var blocks: Array<Array<Boolean>>? = null
@@ -8,6 +9,7 @@ class Board(private var width: Int, private var height: Int) {
     private var innerWidth = 2
     private var brick: BaseBrick? = null
     private var nextBrick: BaseBrick? = null
+    var score = 0
 
     init {
         blocks = Array(height){_ ->
@@ -112,6 +114,49 @@ class Board(private var width: Int, private var height: Int) {
         return ret
     }
 
+    private fun drawBrickInRect(canvas: Canvas, rect: Rect, brick: BaseBrick) {
+        var w = min(rect.width(), rect.height())
+        var blockWidth = w/4
+        var offset = brick.shape[0].x
+        for (point in brick.shape) {
+            offset = min(offset, point.x)
+        }
+        var blockRect = Rect()
+        var paint = Paint()
+        paint.color = Color.BLACK
+        for (point in brick.shape) {
+            blockRect.left = rect.left + (point.x - offset) * blockWidth
+            blockRect.top = rect.top + point.y * blockWidth
+            blockRect.right = blockRect.left + blockWidth
+            blockRect.bottom = blockRect.top + blockWidth
+            canvas.drawRect(blockRect, paint)
+        }
+    }
+
+    private fun drawHead(canvas: Canvas, left: Int, top: Int) {
+        val paint = Paint()
+        var x = 0f
+        var y = 0f
+        paint.textSize = 24f
+        paint.color = Color.BLACK
+        paint.isFakeBoldText = true
+        x = left.toFloat()
+        y = top.toFloat() + 10
+        canvas.drawText("score: $score", x, y + 20, paint)
+
+        if (nextBrick != null) {
+            y += 30
+            canvas.drawText("next: ", x, y + 30, paint)
+
+            var brickRect = Rect()
+            brickRect.left = left + 80
+            brickRect.top = y.toInt()
+            brickRect.right = brickRect.left + 40
+            brickRect.bottom = brickRect.top + 40
+            drawBrickInRect(canvas, brickRect, nextBrick!!)
+        }
+    }
+
     fun draw(canvas: Canvas, margin: Rect?) {
         var left = 0
         var top = 0
@@ -136,6 +181,7 @@ class Board(private var width: Int, private var height: Int) {
                 left = (canvas.width - w)/2
             }
 
+            drawHead(canvas, left, 0)
             val paint = Paint()
             paint.strokeWidth = innerWidth.toFloat()
             paint.color = Color.BLACK
